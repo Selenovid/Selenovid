@@ -32,7 +32,6 @@ public class ScreenRecorder {
 		        String filename = "screenshot_" + UUID.randomUUID() + ".png";
 		        String currentDir = System.getProperty("user.dir");
 		        screenshotFile = new File(currentDir, filename);
-
 		        ImageIO.write(screenFullImage, "png", screenshotFile);
 		        System.out.println("Screenshot saved to: " + screenshotFile.getAbsolutePath());
 

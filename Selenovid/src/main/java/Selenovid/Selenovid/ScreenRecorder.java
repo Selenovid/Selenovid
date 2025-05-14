@@ -10,6 +10,7 @@
      import org.openqa.selenium.WebDriver;
      import org.openqa.selenium.WebDriverException;
      import org.apache.commons.io.FileUtils;
+     
      public class ScreenRecorder {
          private static final Logger LOGGER = Logger.getLogger(ScreenRecorder.class.getName());
          private String outputDir = "screenshots"; 

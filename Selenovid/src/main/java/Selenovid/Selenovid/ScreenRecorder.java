@@ -1,68 +1,68 @@
-package Selenovid.Selenovid;
+     package Selenovid.Selenovid; 
 
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
+     import java.io.File;
+     import java.io.IOException;
+     import java.util.UUID;
+     import java.util.logging.Level;
+     import java.util.logging.Logger;
+     import org.openqa.selenium.OutputType;
+     import org.openqa.selenium.TakesScreenshot;
+     import org.openqa.selenium.WebDriver;
+     import org.openqa.selenium.WebDriverException;
+     import org.apache.commons.io.FileUtils;
+     public class ScreenRecorder {
+         private static final Logger LOGGER = Logger.getLogger(ScreenRecorder.class.getName());
+         private String outputDir = "screenshots"; 
+         public ScreenRecorder() {
+             new File(outputDir).mkdirs(); 
+         }
+         
+         public File captureScreen(WebDriver driver, String testName) {
+             if (driver == null) {
+                 throw new IllegalArgumentException("WebDriver instance cannot be null.");
+             }
+             if (!(driver instanceof TakesScreenshot)) {
+                 throw new IllegalArgumentException("WebDriver instance does not support taking screenshots.");
+             }
 
-import javax.imageio.ImageIO;
+             File screenshotFile = null;
+             try {
+                 // Take screenshot using Selenium's TakesScreenshot
+                 TakesScreenshot ts = (TakesScreenshot) driver;
+                 File sourceFile = ts.getScreenshotAs(OutputType.FILE);
+                 String filename = testName + "_" + UUID.randomUUID() + ".png";
+                 screenshotFile = new File(outputDir, filename);
+                 FileUtils.copyFile(sourceFile, screenshotFile);
+                 LOGGER.log(Level.INFO, "Screenshot saved to: {0}", screenshotFile.getAbsolutePath());
+             } catch (WebDriverException | IOException ex) {
+                 LOGGER.log(Level.SEVERE, "Error capturing or saving screenshot: {0}", ex.getMessage());
+                 ex.printStackTrace();
+                 if (screenshotFile != null && screenshotFile.exists()) {
+                     screenshotFile.delete();
+                 }
+                 screenshotFile = null;
+             }
+             return screenshotFile;
+         }
+         public void setOutputDir(String dir) {
+             if (dir == null || dir.isEmpty()) {
+                 throw new IllegalArgumentException("Output directory cannot be null or empty.");
+             }
+             File dirFile = new File(dir);
+             if (!dirFile.exists() && !dirFile.mkdirs()) {
+                 throw new IllegalArgumentException("Failed to create output directory: " + dir);
+             }
+             if (!dirFile.isDirectory()) {
+                 throw new IllegalArgumentException("Output path is not a directory: " + dir);
+             }
+             this.outputDir = dir;
+             LOGGER.log(Level.INFO, "Output directory set to: {0}", dir);
+         }
+         public static void main(String[] args) {
+             System.out.println("This is a library class.  It's meant to be used within a testing framework (TestNG or JUnit).");
+             System.out.println("See the TestNGScreenRecorder.java or JUnitScreenRecorder.java classes for how to integrate it into your tests.");
+         }
+     }
 
-public class ScreenRecorder {
-	private Path tempDir;
-
-
-		public ScreenRecorder() {
-		    // Removed temporary directory creation logic
-		    System.out.println("Saving screenshots to the source code folder.");
-		}
-
-		private File captureScreen() {
-		    File screenshotFile = null;
-		    try {
-		        Robot robot = new Robot();
-		        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-		        BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
-		        String filename = "screenshot_" + UUID.randomUUID() + ".png";
-		        String currentDir = System.getProperty("user.dir");
-		        screenshotFile = new File(currentDir, filename);
-		        ImageIO.write(screenFullImage, "png", screenshotFile);
-		        System.out.println("Screenshot saved to: " + screenshotFile.getAbsolutePath());
-
-		    } catch (AWTException | IOException ex) {
-		        System.err.println("Error capturing or saving screenshot: " + ex.getMessage());
-		        if (screenshotFile != null && screenshotFile.exists()) {
-		            screenshotFile.delete(); // Clean up if saving failed
-		        }
-		        screenshotFile = null; // Indicate failure
-		    }
-		    return screenshotFile;
-		}
-
-		// Placeholder for startRecording and stopRecording methods
-		public void startRecording(String outputFilePath) {
-		    System.out.println("startRecording() method called (not yet implemented)");
-		}
-
-		public void stopRecording1() {
-		    System.out.println("stopRecording() method called (not yet implemented)");
-		}
-
-		// Example main method for testing
-		public static void main(String[] args) throws InterruptedException {
-		    ScreenRecorder recorder = new ScreenRecorder();
-		    System.out.println("Capturing a screenshot...");
-		    File capturedFile = recorder.captureScreen();
-		    if (capturedFile != null) {
-		        System.out.println("Screenshot captured successfully.");
-		    } else {
-		        System.out.println("Screenshot capture failed.");
-		    }
-		}
-}
+     
+    

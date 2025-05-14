@@ -62,6 +62,7 @@
              System.out.println("This is a library class.  It's meant to be used within a testing framework (TestNG or JUnit).");
              System.out.println("See the TestNGScreenRecorder.java or JUnitScreenRecorder.java classes for how to integrate it into your tests.");
          }
+     
      }
 
      

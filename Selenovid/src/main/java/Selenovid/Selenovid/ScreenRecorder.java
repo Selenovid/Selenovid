@@ -16,7 +16,6 @@
          public ScreenRecorder() {
              new File(outputDir).mkdirs(); 
          }
-         
          public File captureScreen(WebDriver driver, String testName) {
              if (driver == null) {
                  throw new IllegalArgumentException("WebDriver instance cannot be null.");
